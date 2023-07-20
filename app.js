@@ -43,22 +43,30 @@ async function getItems() {
   }
 }
 
+
+
 app.get("/", async function(req, res) {
   try {
     if (foundItems.length === 0) {
       await getItems();
-      await Item.insertMany(defaultItems);
-      console.log("All items have been saved.");
+      if (foundItems.length === 0) {
+        await Item.insertMany(defaultItems);
+        console.log("All items have been saved.");
+        res.redirect("/");
+      }
+     
     }
 
     res.render("list", { listTitle: "Today", newListItems: foundItems });
   } catch (error) {
     console.log(error);
-    
   } finally {
     mongoose.connection.close();
   }
 });
+
+
+
 
 
 
